@@ -11,6 +11,14 @@ This sample demonstrates a workaround when you need to access information from `
 @@allow('create,update,delete', auth().hasWritePermission)
 ```
 
+Note that this is a temporary workaround. We'll support using `auth()` function call in [collection predict expressions](https://zenstack.dev/docs/reference/zmodel-language#collection-predicate-expressions) in the future, and then you can directly write policy rules like:
+
+```prisma
+@@allow('create,update,delete', auth().roles?[permission == 'WRITE'])
+```
+
+You can track the feature request here: https://github.com/zenstackhq/zenstack/issues/803
+
 ## Run
 
 -   npm install

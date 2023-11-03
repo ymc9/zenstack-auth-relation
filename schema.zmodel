@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String?
+  roles Role[]
+
+  // Virtual field for "lifting" permission information from the "roles" relation
+  // The field value is computed before creating enhanced PrismaClient
+  hasWritePermission Boolean? @ignore
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  name String @unique
+  permission String // "READ" or "WRITE"
+  users User[]
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+  title String
+  content String?
+  published Boolean @default(false)
+
+  @@allow('read', true)
+  @@allow('create,update,delete', auth().hasWritePermission)
+}
